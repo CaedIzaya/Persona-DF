@@ -134,7 +134,6 @@ export function ResultExperience({
 
           <div className="mt-5 space-y-2 text-center">
             <p className="text-lg font-medium leading-8 text-white">{oneLiner}</p>
-            {isEaster ? <p className="text-sm font-semibold text-signal">你触发了彩蛋人格！</p> : null}
             {isEaster ? (
               <div className="pt-1">
                 <button
@@ -147,13 +146,6 @@ export function ResultExperience({
               </div>
             ) : null}
             <p className="text-sm text-zinc-300">匹配程度：{topMatchPercent}%</p>
-            {isEaster ? (
-              <p className="text-sm text-zinc-300">
-                主人格底色：{outcome.corePersona.nameCn}
-              </p>
-            ) : (
-              <p className="text-sm text-zinc-300">没有触发彩蛋，可以继续测试探索。</p>
-            )}
           </div>
         </section>
 
