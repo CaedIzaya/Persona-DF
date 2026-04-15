@@ -65,11 +65,13 @@ const CORE_BONE_QUESTION_IDS = new Set<QuestionId>([
 ]);
 
 const DIMENSION_WEIGHTS: Record<DimensionId, number> = {
-  combat: 1.1,
+  // 维度含金量校准：战斗分产出机会更高，适当降权；理性分稀缺，适当升权。
+  // 目标接近“40 战斗分 ≈ 20 理性分”的价值感。
+  combat: 0.65,
   team: 0.9,
-  loot: 1,
-  tactics: 1.2,
-  rational: 1.2,
+  loot: 0.95,
+  tactics: 1.1,
+  rational: 1.3,
   emotion: 0.8,
 };
 
@@ -120,8 +122,8 @@ const EXTREME_PERSONA_IDS = new Set<PersonaId>([
 
 const PERSONA_BALANCE_FACTORS: Partial<Record<PersonaId, number>> = {
   // 随机样本中高频偏置修正：避免“本质高手/威龙”过度占据 Top1
-  benzhigaoshou: 0.9,
-  weilong: 0.93,
+  benzhigaoshou: 0.92,
+  weilong: 0.95,
 };
 
 const PERSONA_KEY_DIMENSIONS: Partial<Record<PersonaId, DimensionId[]>> = {
