@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -18,7 +19,6 @@ import {
   type PersonaId,
 } from "@/lib/quiz/types";
 
-const bgImage = "/images/bg-main.png";
 const BILIBILI_URL = "https://space.bilibili.com/202993136?spm_id_from=333.33.0.0";
 
 export function ResultExperience({
@@ -99,8 +99,6 @@ export function ResultExperience({
   const secondMatch = outcome.baseRanking[1];
   const thirdMatch = outcome.baseRanking[2];
   const topMatchPercent = Math.round(topMatch?.score ?? 0);
-  const secondImage = secondMatch ? getPersonaImageUrl(secondMatch.persona.nameCn) : null;
-  const thirdImage = thirdMatch ? getPersonaImageUrl(thirdMatch.persona.nameCn) : null;
 
   const radarItems = [
     { label: "交战意愿", value: combat },
@@ -112,10 +110,7 @@ export function ResultExperience({
   ];
 
   return (
-    <main className="relative isolate min-h-screen overflow-hidden py-8 sm:py-10">
-      <img src={bgImage} alt="结果页背景图" className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,6,0.78),rgba(5,8,6,0.92))]" />
-
+    <main className="relative isolate min-h-screen overflow-hidden bg-canvas py-8 sm:py-10">
       <div className="relative mx-auto w-full max-w-4xl space-y-6 px-4 sm:px-6">
         <section className="panel p-5 sm:p-7">
           <p className="eyebrow text-center">结果揭晓</p>
@@ -123,10 +118,13 @@ export function ResultExperience({
           <h2 className="mt-2 text-center text-5xl font-semibold text-white sm:text-6xl">{displayName}</h2>
           <p className="mt-3 text-center text-2xl font-semibold text-signal sm:text-3xl">{displayCode}</p>
 
-          <div className="mt-6 h-[360px] w-full overflow-hidden rounded-md border border-white/10 bg-black/40 sm:h-[520px]">
-            <img
+          <div className="relative mt-6 h-[360px] w-full overflow-hidden rounded-md border border-white/10 bg-black/40 sm:h-[520px]">
+            <Image
               src={displayImage}
               alt={`${displayName} 人格图`}
+              fill
+              priority
+              sizes="(min-width: 1024px) 896px, 100vw"
               className="h-full w-full object-contain"
               style={{ objectPosition: displayImagePosition }}
             />
@@ -185,9 +183,12 @@ export function ResultExperience({
               {secondMatch ? (
                 <>
                   <p className="mt-1 text-xl font-semibold text-white">{secondMatch.persona.nameCn}</p>
-                  <img
-                    src={secondImage ?? ""}
+                  <Image
+                    src={getPersonaImageUrl(secondMatch.persona.nameCn)}
                     alt={`${secondMatch.persona.nameCn} 人格图`}
+                    width={640}
+                    height={320}
+                    sizes="(min-width: 640px) 320px, 100vw"
                     className="mt-3 h-48 w-full rounded-md border border-white/10 object-contain"
                   />
                 </>
@@ -200,9 +201,12 @@ export function ResultExperience({
               {thirdMatch ? (
                 <>
                   <p className="mt-1 text-xl font-semibold text-white">{thirdMatch.persona.nameCn}</p>
-                  <img
-                    src={thirdImage ?? ""}
+                  <Image
+                    src={getPersonaImageUrl(thirdMatch.persona.nameCn)}
                     alt={`${thirdMatch.persona.nameCn} 人格图`}
+                    width={640}
+                    height={320}
+                    sizes="(min-width: 640px) 320px, 100vw"
                     className="mt-3 h-48 w-full rounded-md border border-white/10 object-contain"
                   />
                 </>

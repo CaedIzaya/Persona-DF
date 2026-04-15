@@ -6,7 +6,6 @@ import { questions } from "@/lib/quiz/questions";
 import { isAnswerMapComplete, serializeAnswers } from "@/lib/quiz/scoring";
 import type { PartialAnswerMap } from "@/lib/quiz/types";
 
-const heroImage = "/images/bg-main.png";
 const NON_SHUFFLED_QUESTION_IDS = new Set(["asset-level"]);
 const OPTION_ORDER_SEED = "quiz-option-order-v1";
 
@@ -59,10 +58,7 @@ export function QuizExperience() {
   }
 
   return (
-    <main className="relative isolate min-h-screen overflow-hidden">
-      <img src={heroImage} alt="答题页背景图" className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,6,0.74),rgba(5,8,6,0.9))]" />
-
+    <main className="relative isolate min-h-screen overflow-hidden bg-canvas">
       <div className="relative mx-auto flex min-h-screen w-full max-w-4xl items-center px-5 py-10 sm:px-6">
         <section className="panel w-full p-6 sm:p-8">
           <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">

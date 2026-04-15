@@ -1,26 +1,26 @@
 const personaImageMap: Record<string, string> = {
-  猛攻将: "/images/personas/menggonglang.png",
-  老板: "/images/personas/laoban.png",
-  鼠鼠: "/images/personas/shushu.png",
-  本质高手: "/images/personas/benzhigaoshou.png",
-  妈妈: "/images/personas/mama.png",
-  秃鹫: "/images/personas/tujiu.png",
-  收藏家: "/images/personas/shoucangjia.png",
-  威龙: "/images/personas/weilong.png",
-  教官: "/images/personas/jiaoguan.png",
-  赛伊德: "/images/personas/saiyide.png",
-  德穆兰: "/images/personas/demulan.png",
-  渡鸦: "/images/personas/duya.png",
-  哈德森: "/images/personas/hadesen.png",
-  雷斯: "/images/personas/leisi.png",
-  嘉豪: "/images/personas/jiahao.png",
-  老贝榨: "/images/personas/laobeizha.png",
-  堵桥来: "/images/personas/duqiaolai.png",
-  唐王大人: "/images/personas/tangwang.png",
-  西普坝王: "/images/personas/xipubawang.png",
-  林树: "/images/personas/linshu.png",
-  昊天: "/images/personas/haotian.png",
-  夺舍的狼: "/images/personas/duoshedelang.png",
+  猛攻将: "/images/personas/menggonglang.webp",
+  老板: "/images/personas/laoban.webp",
+  鼠鼠: "/images/personas/shushu.webp",
+  本质高手: "/images/personas/benzhigaoshou.webp",
+  妈妈: "/images/personas/mama.webp",
+  秃鹫: "/images/personas/tujiu.webp",
+  收藏家: "/images/personas/shoucangjia.webp",
+  威龙: "/images/personas/weilong.webp",
+  教官: "/images/personas/jiaoguan.webp",
+  赛伊德: "/images/personas/saiyide.webp",
+  德穆兰: "/images/personas/demulan.webp",
+  渡鸦: "/images/personas/duya.webp",
+  哈德森: "/images/personas/hadesen.webp",
+  雷斯: "/images/personas/leisi.webp",
+  嘉豪: "/images/personas/jiahao.webp",
+  老贝榨: "/images/personas/laobeizha.webp",
+  堵桥来: "/images/personas/duqiaolai.webp",
+  唐王大人: "/images/personas/tangwang.webp",
+  西普坝王: "/images/personas/xipubawang.webp",
+  林树: "/images/personas/linshu.webp",
+  昊天: "/images/personas/haotian.webp",
+  夺舍的狼: "/images/personas/duoshedelang.webp",
 };
 
 const personaImagePositionMap: Record<string, string> = {
@@ -33,7 +33,7 @@ const personaImagePositionMap: Record<string, string> = {
 };
 
 export function getPersonaImageUrl(nameCn: string) {
-  return personaImageMap[nameCn] ?? "/images/personas/menggonglang.png";
+  return personaImageMap[nameCn] ?? "/images/personas/menggonglang.webp";
 }
 
 export function getPersonaImagePosition(nameCn: string) {

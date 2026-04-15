@@ -1,10 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { loadPersonaAnalysisMap } from "@/lib/quiz/analysisParser";
 import { easterEggs } from "@/lib/quiz/easterEggs";
 import { getPersonaImagePosition, getPersonaImageUrl } from "@/lib/quiz/personaVisuals";
 import { personas } from "@/lib/quiz/personas";
-
-const bgImage = "/images/bg-main.png";
 
 export default function PersonasPage() {
   const analysisMap = loadPersonaAnalysisMap();
@@ -30,10 +29,7 @@ export default function PersonasPage() {
   const cards = [...baseCards, ...easterCards];
 
   return (
-    <main className="relative isolate min-h-screen overflow-hidden py-8 sm:py-10">
-      <img src={bgImage} alt="人格预览背景图" className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,6,0.78),rgba(5,8,6,0.92))]" />
-
+    <main className="relative isolate min-h-screen overflow-hidden bg-canvas py-8 sm:py-10">
       <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6">
         <div className="mb-6 flex items-center justify-between gap-3">
           <h1 className="text-3xl font-semibold text-white sm:text-4xl">所有人格预览</h1>
@@ -49,9 +45,12 @@ export default function PersonasPage() {
               className="overflow-hidden rounded-md border border-white/12 bg-black/28 transition duration-200 hover:-translate-y-1 hover:border-signal/70 hover:bg-black/35"
             >
               <div className="h-52 w-full overflow-hidden bg-black/45">
-                <img
+                <Image
                   src={card.imageUrl}
                   alt={`${card.nameCn} 人格图`}
+                  width={640}
+                  height={416}
+                  sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className="h-full w-full object-contain"
                   style={{ objectPosition: card.imagePosition }}
                 />

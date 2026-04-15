@@ -1,19 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
 
-const heroImage = "/images/bg-main.png";
-const logoImage = "/images/logo.png";
+const logoImage = "/images/logo.webp";
 const BILIBILI_URL = "https://space.bilibili.com/202993136?spm_id_from=333.33.0.0";
 
 export default function HomePage() {
   return (
-    <main className="relative isolate min-h-screen overflow-hidden">
-      <img src={heroImage} alt="首页背景图" className="absolute inset-0 h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,6,0.72),rgba(5,8,6,0.88))]" />
-
+    <main className="relative isolate min-h-screen overflow-hidden bg-canvas">
       <div className="relative mx-auto flex min-h-screen w-full max-w-6xl -translate-y-8 flex-col items-center justify-center px-6 text-center sm:-translate-y-12">
-        <img
+        <Image
           src={logoImage}
           alt="三角洲人格测试 Logo"
+          width={128}
+          height={128}
+          priority
+          sizes="(min-width: 640px) 8rem, 7rem"
           className="mb-6 h-28 w-28 object-contain sm:mb-8 sm:h-32 sm:w-32"
         />
 
