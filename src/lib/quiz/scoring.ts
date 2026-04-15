@@ -112,12 +112,17 @@ const EXTREME_PERSONA_IDS = new Set<PersonaId>([
   "leisi",
   "saiyide",
   "hadesen",
-  "benzhigaoshou",
   "tangwang",
   "shoucangjia",
   "duqiaolai",
   "laobeizha",
 ]);
+
+const PERSONA_BALANCE_FACTORS: Partial<Record<PersonaId, number>> = {
+  // 随机样本中高频偏置修正：避免“本质高手/威龙”过度占据 Top1
+  benzhigaoshou: 0.9,
+  weilong: 0.93,
+};
 
 const PERSONA_KEY_DIMENSIONS: Partial<Record<PersonaId, DimensionId[]>> = {
   menggonglang: ["combat", "emotion"],
@@ -876,7 +881,8 @@ function calcPersonaDisplayScore(
     signalFit * (matchWeights.signalWeight * 100) +
     intentFit * (matchWeights.intentWeight * 100);
   const score = weightedScore * dimensionConstraint.penaltyMultiplier + consistencyBonus;
-  return Math.min(100, Math.max(0, score));
+  const balanceFactor = PERSONA_BALANCE_FACTORS[personaId] ?? 1;
+  return Math.min(100, Math.max(0, score * balanceFactor));
 }
 
 function calcPersonaSignalFit(personaId: PersonaId, signalScore: number) {
