@@ -41,6 +41,7 @@ const SPECIAL_SIGNAL_HEAVY_SIGNAL_WEIGHT = 0.78;
 const SPECIAL_SIGNAL_HEAVY_INTENT_WEIGHT = 0.05;
 const SIGNAL_HEAVY_PERSONA_IDS = new Set<PersonaId>(["jiahao", "laobeizha", "duqiaolai", "tangwang"]);
 const CLASS_EASTER_SIGNAL_HIT_RATE_THRESHOLD = 0.9;
+const JIAHAO_DIRECT_UNLOCK_HIT_RATE_THRESHOLD = 0.95;
 const DIMENSION_HARD_GAP_THRESHOLD = 2.8;
 const DIMENSION_HARD_GAP_PENALTY = 0.88;
 const KEY_DIMENSION_CONSISTENT_GAP = 1.5;
@@ -1124,17 +1125,21 @@ function isClassEasterPersonaUnlocked(
     return false;
   }
 
-  const requiredBasePersonas = CLASS_EASTER_BASE_REQUIREMENTS[personaId] ?? [];
-  if (!requiredBasePersonas.includes(regularCorePersonaId)) {
-    return false;
-  }
-
   const mappedEggId = BASE_PERSONA_TO_LEGACY_EGG[personaId];
   if (!mappedEggId) {
     return false;
   }
 
   const signalHitRate = getLegacyEggSignalHitRate(mappedEggId, answers);
+  // 嘉豪允许“高命中率直通”，避免被前置人格硬门槛完全挡住
+  if (personaId === "jiahao" && signalHitRate >= JIAHAO_DIRECT_UNLOCK_HIT_RATE_THRESHOLD) {
+    return true;
+  }
+
+  const requiredBasePersonas = CLASS_EASTER_BASE_REQUIREMENTS[personaId] ?? [];
+  if (!requiredBasePersonas.includes(regularCorePersonaId)) {
+    return false;
+  }
   return signalHitRate >= CLASS_EASTER_SIGNAL_HIT_RATE_THRESHOLD;
 }
 

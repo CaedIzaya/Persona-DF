@@ -154,7 +154,7 @@ export const personaSignalOverrides: Partial<Record<QuestionId, Record<string, P
       shoucangjia: 2,
     },
     "full-send": {
-      menggonglang: 3,
+      menggonglang: 9,
       shushu: -2,
       saiyide: 2,
       leisi: 2,
@@ -1333,13 +1333,13 @@ export const personaSignalOverrides: Partial<Record<QuestionId, Record<string, P
       benzhigaoshou: 1,
     },
     "meta-guns": {
-      menggonglang: 3,
+      menggonglang: 9,
       weilong: 2,
       jiahao: 3,
       benzhigaoshou: 2,
     },
     "value-build": {
-      menggonglang: 2,
+      menggonglang: 9,
       shushu: 1,
       weilong: 2,
       tangwang: 1,

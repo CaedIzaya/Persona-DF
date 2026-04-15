@@ -121,7 +121,7 @@ const questionBank: Question[] = [
         description: "这局就是要狠狠干，别问为什么。",
         dimensionDeltas: { emotion: 2, combat: 2, tactics: -1, loot: -1 },
         meaningDeltas: { kill: 3, destruction: 1 },
-        personaSignals: { menggonglang: 2, leisi: 2, saiyide: 1 },
+        personaSignals: { menggonglang: 9, leisi: 2, saiyide: 1 },
       },
       {
         id: "style-build",
@@ -1093,7 +1093,7 @@ const questionBank: Question[] = [
         description: "强枪就是强枪，狠狠干赢了再说。",
         dimensionDeltas: { combat: 2, emotion: 1, tactics: 1, loot: -1 },
         meaningDeltas: { kill: 3 },
-        personaSignals: { menggonglang: 2, weilong: 2, benzhigaoshou: 2, saiyide: 1 },
+        personaSignals: { menggonglang: 9, weilong: 2, benzhigaoshou: 2, saiyide: 1 },
       },
       {
         id: "value-build",
@@ -1101,7 +1101,7 @@ const questionBank: Question[] = [
         description: "我可以不花冤枉钱，但输出不能差。",
         dimensionDeltas: { rational: 3, tactics: 2, loot: 1, combat: 1 },
         meaningDeltas: { efficiency: 4, control: 1 },
-        personaSignals: { benzhigaoshou: 2, laoban: 2, hadesen: 2, shushu: 1 },
+        personaSignals: { menggonglang: 9, benzhigaoshou: 2, laoban: 2, hadesen: 2, shushu: 1 },
       },
       {
         id: "my-own-build",
