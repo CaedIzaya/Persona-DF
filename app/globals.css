@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(99, 240, 121, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(9, 9, 9, 0.92), rgba(9, 9, 9, 0.98)),
+    #090909;
+  color: #e8ece9;
+  font-family:
+    "PingFang SC",
+    "Microsoft YaHei",
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+}
+
+::selection {
+  background: rgba(99, 240, 121, 0.24);
+  color: #ffffff;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .page-shell {
+    @apply mx-auto max-w-7xl px-5 sm:px-6;
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-mist-dim;
+  }
+
+  .section-title {
+    @apply text-3xl font-semibold leading-tight text-white sm:text-4xl;
+  }
+
+  .panel {
+    @apply border border-line shadow-tactical backdrop-blur-sm;
+    background-color: rgba(17, 19, 20, 0.88);
+  }
+
+  .panel-inset {
+    @apply border border-white/8 bg-black/25;
+  }
+
+  .button-primary {
+    @apply inline-flex items-center justify-center rounded-md border border-signal bg-signal px-5 py-3 text-sm font-semibold text-black hover:bg-[#7bff90];
+  }
+
+  .button-secondary {
+    @apply inline-flex items-center justify-center rounded-md border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white hover:border-signal/60 hover:text-signal;
+  }
+
+  .metric-label {
+    @apply text-[11px] font-medium uppercase tracking-[0.22em] text-mist-dim;
+  }
+
+  .signal-value {
+    @apply text-4xl font-semibold leading-none text-white sm:text-5xl;
+  }
+
+  .green-line {
+    @apply h-px bg-gradient-to-r from-signal via-signal/10 to-transparent;
+  }
+
+  .tactical-grid {
+    background-image:
+      linear-gradient(rgba(99, 240, 121, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 240, 121, 0.05) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+
+  .hero-overlay {
+    background:
+      linear-gradient(90deg, rgba(7, 10, 8, 0.96), rgba(7, 10, 8, 0.82) 54%, rgba(7, 10, 8, 0.48)),
+      linear-gradient(180deg, rgba(99, 240, 121, 0.08), transparent 45%);
+  }
+}
