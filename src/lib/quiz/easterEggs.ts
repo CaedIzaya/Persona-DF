@@ -14,7 +14,7 @@ export const easterEggs: EasterEggProfile[] = [
     tone: "mint",
     signalWords: ["低门槛收益", "坝王经济", "稳定进账"],
     kind: "special",
-    imageUrl: "/images/personas/xipubawang.webp",
+    imageUrl: "/images/personas/xipubawang.png",
   },
   {
     id: "duoshedelang",
@@ -29,7 +29,7 @@ export const easterEggs: EasterEggProfile[] = [
     tone: "signal",
     signalWords: ["残局收割", "反差爆发", "极限转换"],
     kind: "special",
-    imageUrl: "/images/personas/duoshedelang.webp",
+    imageUrl: "/images/personas/duoshedelang.png",
   },
   {
     id: "linshu",
@@ -44,7 +44,7 @@ export const easterEggs: EasterEggProfile[] = [
     tone: "signal",
     signalWords: ["高压推进", "突击开口", "执行力"],
     kind: "special",
-    imageUrl: "/images/personas/linshu.webp",
+    imageUrl: "/images/personas/linshu.png",
   },
   {
     id: "haotian",
@@ -59,7 +59,7 @@ export const easterEggs: EasterEggProfile[] = [
     tone: "signal",
     signalWords: ["侦查推进", "高压读局", "节奏压制"],
     kind: "special",
-    imageUrl: "/images/personas/haotian.webp",
+    imageUrl: "/images/personas/haotian.png",
   },
 ];
 
