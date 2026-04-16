@@ -380,7 +380,7 @@ const questionBank: Question[] = [
   },
   {
     id: "asset-level",
-    prompt: "你平时最常处在什么资产水平？",
+    prompt: "你的总资产（非现金流）是多少？",
     brief: "这题主要反映仓库波动、风格稳定性和收益习惯。",
     options: [
       {
