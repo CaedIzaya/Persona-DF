@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { PersonaImage } from "@/components/common/PersonaImage";
 import { loadPersonaAnalysisMap } from "@/lib/quiz/analysisParser";
 import { easterEggs } from "@/lib/quiz/easterEggs";
 import { getPersonaImagePosition, getPersonaImageUrl } from "@/lib/quiz/personaVisuals";
@@ -45,7 +45,7 @@ export default function PersonasPage() {
               className="overflow-hidden rounded-md border border-white/12 bg-black/28 transition duration-200 hover:-translate-y-1 hover:border-signal/70 hover:bg-black/35"
             >
               <div className="h-52 w-full overflow-hidden bg-black/45">
-                <Image
+                <PersonaImage
                   src={card.imageUrl}
                   alt={`${card.nameCn} 人格图`}
                   width={640}

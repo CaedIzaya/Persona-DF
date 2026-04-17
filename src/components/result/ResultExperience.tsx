@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { PersonaImage } from "@/components/common/PersonaImage";
 import {
   getDimensionBounds,
   isAnswerMapComplete,
@@ -119,7 +119,7 @@ export function ResultExperience({
           <p className="mt-3 text-center text-2xl font-semibold text-signal sm:text-3xl">{displayCode}</p>
 
           <div className="relative mt-6 h-[360px] w-full overflow-hidden rounded-md border border-white/10 bg-black/40 sm:h-[520px]">
-            <Image
+            <PersonaImage
               src={displayImage}
               alt={`${displayName} 人格图`}
               fill
@@ -183,7 +183,7 @@ export function ResultExperience({
               {secondMatch ? (
                 <>
                   <p className="mt-1 text-xl font-semibold text-white">{secondMatch.persona.nameCn}</p>
-                  <Image
+                  <PersonaImage
                     src={getPersonaImageUrl(secondMatch.persona.nameCn)}
                     alt={`${secondMatch.persona.nameCn} 人格图`}
                     width={640}
@@ -201,7 +201,7 @@ export function ResultExperience({
               {thirdMatch ? (
                 <>
                   <p className="mt-1 text-xl font-semibold text-white">{thirdMatch.persona.nameCn}</p>
-                  <Image
+                  <PersonaImage
                     src={getPersonaImageUrl(thirdMatch.persona.nameCn)}
                     alt={`${thirdMatch.persona.nameCn} 人格图`}
                     width={640}

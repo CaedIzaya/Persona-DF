@@ -1,3 +1,5 @@
+const defaultPersonaImage = "/images/personas/menggonglang.webp";
+
 const personaImageMap: Record<string, string> = {
   猛攻将: "/images/personas/menggonglang.webp",
   老板: "/images/personas/laoban.webp",
@@ -33,9 +35,20 @@ const personaImagePositionMap: Record<string, string> = {
 };
 
 export function getPersonaImageUrl(nameCn: string) {
-  return personaImageMap[nameCn] ?? "/images/personas/menggonglang.webp";
+  return personaImageMap[nameCn] ?? defaultPersonaImage;
 }
 
 export function getPersonaImagePosition(nameCn: string) {
   return personaImagePositionMap[nameCn] ?? personaImagePositionMap.default;
+}
+
+export function getPersonaImageFallbackChain(src: string, finalFallback = defaultPersonaImage) {
+  const chain = [src];
+  if (src.endsWith(".webp")) {
+    chain.push(src.replace(/\.webp$/i, ".png"));
+  } else if (src.endsWith(".png")) {
+    chain.push(src.replace(/\.png$/i, ".webp"));
+  }
+  chain.push(finalFallback);
+  return Array.from(new Set(chain));
 }
