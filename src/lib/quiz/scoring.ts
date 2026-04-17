@@ -32,16 +32,35 @@ import {
 
 const CORE_BONE_WEIGHT = 1.35;
 const LEGACY_EGG_PROMOTION_WEIGHT = 2;
-const PERSONA_CANDIDATE_POOL_SIZE = 5;
-const DIMENSION_MATCH_WEIGHT = 0.25;
-const PERSONA_SIGNAL_MATCH_WEIGHT = 0.7;
-const INTENT_MATCH_WEIGHT = 0.05;
-const SPECIAL_SIGNAL_HEAVY_DIMENSION_WEIGHT = 0.17;
-const SPECIAL_SIGNAL_HEAVY_SIGNAL_WEIGHT = 0.78;
-const SPECIAL_SIGNAL_HEAVY_INTENT_WEIGHT = 0.05;
+const PERSONA_CANDIDATE_POOL_SIZE = 6;
+const DIMENSION_MATCH_WEIGHT = 0.33;
+const PERSONA_SIGNAL_MATCH_WEIGHT = 0.6;
+const INTENT_MATCH_WEIGHT = 0.07;
+const SPECIAL_SIGNAL_HEAVY_DIMENSION_WEIGHT = 0.25;
+const SPECIAL_SIGNAL_HEAVY_SIGNAL_WEIGHT = 0.68;
+const SPECIAL_SIGNAL_HEAVY_INTENT_WEIGHT = 0.07;
+const SIGNAL_HEAVY_SIGNAL_CAP_MULTIPLIER = 0.62;
 const SIGNAL_HEAVY_PERSONA_IDS = new Set<PersonaId>(["jiahao", "laobeizha", "duqiaolai", "tangwang"]);
-const CLASS_EASTER_SIGNAL_HIT_RATE_THRESHOLD = 0.9;
-const JIAHAO_DIRECT_UNLOCK_HIT_RATE_THRESHOLD = 0.88;
+const DEFAULT_CLASS_EASTER_SIGNAL_HIT_RATE_THRESHOLD = 0.82;
+const CLASS_EASTER_SIGNAL_HIT_RATE_THRESHOLDS: Partial<Record<PersonaId, number>> = {
+  tangwang: 0.75,
+  laobeizha: 0.75,
+  duqiaolai: 0.8,
+  jiahao: 0.84,
+};
+const CLASS_EASTER_DIRECT_UNLOCK_THRESHOLDS: Partial<Record<PersonaId, number>> = {
+  tangwang: 0.75,
+  laobeizha: 0.75,
+  duqiaolai: 0.8,
+  jiahao: 0.84,
+};
+const CLASS_UNLOCK_SIGNAL_BONUS: Partial<Record<PersonaId, number>> = {
+  tangwang: 8,
+  laobeizha: 10,
+  duqiaolai: 8,
+  jiahao: 5,
+};
+const JIAHAO_DIRECT_UNLOCK_HIT_RATE_THRESHOLD = 0.84;
 const DIMENSION_HARD_GAP_THRESHOLD = 2.8;
 const DIMENSION_HARD_GAP_PENALTY = 0.88;
 const KEY_DIMENSION_CONSISTENT_GAP = 1.5;
@@ -52,6 +71,7 @@ const DESIGN_PROFILE_WEIGHT = 0.35;
 const PROFILE_ANCHOR_HIGH = 8;
 const PROFILE_ANCHOR_LOW = 3;
 const PROFILE_OPTION_SIGNATURE_SCALE = 1.8;
+const LEGACY_EGG_RELEVANT_SIGNAL_MIN = 1.5;
 
 const CORE_BONE_QUESTION_IDS = new Set<QuestionId>([
   "gunfire",
@@ -65,14 +85,16 @@ const CORE_BONE_QUESTION_IDS = new Set<QuestionId>([
 ]);
 
 const DIMENSION_WEIGHTS: Record<DimensionId, number> = {
-  // 维度含金量校准：战斗分产出机会更高，适当降权；理性分稀缺，适当升权。
-  // 目标接近“40 战斗分 ≈ 20 理性分”的价值感。
-  combat: 0.65,
-  team: 0.9,
-  loot: 0.95,
-  tactics: 1.1,
-  rational: 1.3,
-  emotion: 0.8,
+  // 全题库均衡权重（总和 5.7）：
+  // - 降低 team/tactics/rational 的过度主导
+  // - 保持 loot 中性
+  // - 适度抬升 combat/emotion，避免风格向单一理性流收敛
+  combat: 0.88,
+  team: 0.82,
+  loot: 1.0,
+  tactics: 0.93,
+  rational: 1.05,
+  emotion: 1.02,
 };
 
 const DIMENSION_TIE_EPSILON = 1.2;
@@ -94,7 +116,7 @@ const BASE_PERSONA_TO_LEGACY_EGG = Object.fromEntries(
 ) as Partial<Record<PersonaId, EasterEggId>>;
 const CLASS_EASTER_BASE_REQUIREMENTS: Partial<Record<PersonaId, PersonaId[]>> = {
   jiahao: ["benzhigaoshou", "weilong"],
-  laobeizha: ["duya"],
+  laobeizha: ["duya", "benzhigaoshou"],
   duqiaolai: ["tujiu", "hadesen"],
   tangwang: ["shushu", "shoucangjia"],
 };
@@ -121,9 +143,17 @@ const EXTREME_PERSONA_IDS = new Set<PersonaId>([
 ]);
 
 const PERSONA_BALANCE_FACTORS: Partial<Record<PersonaId, number>> = {
-  // 随机样本中高频偏置修正：避免“本质高手/威龙”过度占据 Top1
-  benzhigaoshou: 0.92,
+  // 温和回正：只修正长期高频与长期低频人格，避免“反向过拟合”
+  menggonglang: 0.94,
+  hadesen: 0.98,
+  jiaoguan: 1.02,
+  benzhigaoshou: 0.93,
+  tujiu: 0.9,
   weilong: 0.95,
+  jiahao: 1.02,
+  tangwang: 1.08,
+  laobeizha: 1.1,
+  duqiaolai: 1.05,
 };
 
 const PERSONA_KEY_DIMENSIONS: Partial<Record<PersonaId, DimensionId[]>> = {
@@ -333,6 +363,12 @@ export function scoreQuiz(answers: AnswerMap): QuizOutcome {
   const unlockedClassPersonas = personas.filter((persona) =>
     isClassEasterPersonaUnlocked(persona.id, regularCorePersona.id, answers),
   );
+  for (const unlockedPersona of unlockedClassPersonas) {
+    const bonus = CLASS_UNLOCK_SIGNAL_BONUS[unlockedPersona.id] ?? 0;
+    if (bonus > 0) {
+      personaSignals[unlockedPersona.id] += bonus;
+    }
+  }
   const finalPersonaPool = [...regularPool, ...unlockedClassPersonas];
   const baseRanking = buildPersonaRanking(
     finalPersonaPool,
@@ -888,7 +924,10 @@ function calcPersonaDisplayScore(
 }
 
 function calcPersonaSignalFit(personaId: PersonaId, signalScore: number) {
-  const signalCap = PERSONA_SIGNAL_CAPS[personaId] || 0;
+  const rawSignalCap = PERSONA_SIGNAL_CAPS[personaId] || 0;
+  const signalCap = SIGNAL_HEAVY_PERSONA_IDS.has(personaId)
+    ? rawSignalCap * SIGNAL_HEAVY_SIGNAL_CAP_MULTIPLIER
+    : rawSignalCap;
   return signalCap > 0 ? Math.min(1, Math.max(0, signalScore / signalCap)) : 0;
 }
 
@@ -1139,8 +1178,11 @@ function isClassEasterPersonaUnlocked(
   }
 
   const signalHitRate = getLegacyEggSignalHitRate(mappedEggId, answers);
-  // 嘉豪允许“高命中率直通”，避免被前置人格硬门槛完全挡住
-  if (personaId === "jiahao" && signalHitRate >= JIAHAO_DIRECT_UNLOCK_HIT_RATE_THRESHOLD) {
+  // 高命中率可直通，避免被前置人格硬门槛完全挡住
+  const directUnlockThreshold =
+    CLASS_EASTER_DIRECT_UNLOCK_THRESHOLDS[personaId] ??
+    (personaId === "jiahao" ? JIAHAO_DIRECT_UNLOCK_HIT_RATE_THRESHOLD : undefined);
+  if (typeof directUnlockThreshold === "number" && signalHitRate >= directUnlockThreshold) {
     return true;
   }
 
@@ -1148,12 +1190,13 @@ function isClassEasterPersonaUnlocked(
   if (!requiredBasePersonas.includes(regularCorePersonaId)) {
     return false;
   }
-  return signalHitRate >= CLASS_EASTER_SIGNAL_HIT_RATE_THRESHOLD;
+  const threshold = CLASS_EASTER_SIGNAL_HIT_RATE_THRESHOLDS[personaId] ?? DEFAULT_CLASS_EASTER_SIGNAL_HIT_RATE_THRESHOLD;
+  return signalHitRate >= threshold;
 }
 
 function getLegacyEggSignalHitRate(eggId: EasterEggId, answers: AnswerMap) {
   const relevantQuestions = questions.filter((question) =>
-    question.options.some((option) => (option.easterEggSignals?.[eggId] ?? 0) > 0),
+    question.options.some((option) => (option.easterEggSignals?.[eggId] ?? 0) >= LEGACY_EGG_RELEVANT_SIGNAL_MIN),
   );
 
   if (relevantQuestions.length === 0) {
