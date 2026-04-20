@@ -72,6 +72,7 @@ const PROFILE_ANCHOR_HIGH = 8;
 const PROFILE_ANCHOR_LOW = 3;
 const PROFILE_OPTION_SIGNATURE_SCALE = 1.8;
 const LEGACY_EGG_RELEVANT_SIGNAL_MIN = 1.5;
+const HIGH_SIGNAL_OVERRIDE_THRESHOLD = 6;
 
 const CORE_BONE_QUESTION_IDS = new Set<QuestionId>([
   "gunfire",
@@ -378,8 +379,10 @@ export function scoreQuiz(answers: AnswerMap): QuizOutcome {
     answerSeed,
   );
   const easterEggRanking = buildEasterEggRanking(easterEggScores, answerSeed);
+  const shouldForceJiahao = shouldForcePersonaByHighSignalOptions("jiahao", answers);
+  const rankingWithForcedJiahao = shouldForceJiahao ? ensurePersonaRankedFirst(baseRanking, "jiahao") : baseRanking;
 
-  const corePersona = baseRanking[0]?.persona ?? personas[0];
+  const corePersona = rankingWithForcedJiahao[0]?.persona ?? personas[0];
   const triggeredSpecialEggs = getTriggeredSpecialEggs(corePersona, answers, easterEggScores, answerSeed);
   const selectedEasterEgg = triggeredSpecialEggs[0]?.profile ?? null;
 
@@ -393,7 +396,7 @@ export function scoreQuiz(answers: AnswerMap): QuizOutcome {
     broadcastKind,
     broadcastLabel,
     easterEgg: selectedEasterEgg,
-    baseRanking,
+    baseRanking: rankingWithForcedJiahao,
     easterEggRanking,
     dimensionScores,
     meaningScores,
@@ -1223,6 +1226,45 @@ function getLegacyEggSignalHitRate(eggId: EasterEggId, answers: AnswerMap) {
   }
 
   return hitScore / maxScore;
+}
+
+function shouldForcePersonaByHighSignalOptions(personaId: PersonaId, answers: AnswerMap) {
+  const requiredQuestionIds = new Set<QuestionId>();
+
+  for (const question of questions) {
+    const highSignalOptions = question.options.filter((option) => {
+      const signal = getOptionPersonaSignal(question.id, option.id, personaId, option.personaSignals);
+      return signal >= HIGH_SIGNAL_OVERRIDE_THRESHOLD;
+    });
+
+    if (highSignalOptions.length === 0) {
+      continue;
+    }
+
+    requiredQuestionIds.add(question.id);
+    const selectedOptionId = answers[question.id];
+    if (!highSignalOptions.some((option) => option.id === selectedOptionId)) {
+      return false;
+    }
+  }
+
+  return requiredQuestionIds.size > 0;
+}
+
+function ensurePersonaRankedFirst(ranking: RankedPersona[], personaId: PersonaId): RankedPersona[] {
+  const existing = ranking.find((entry) => entry.persona.id === personaId);
+  const targetPersona = personas.find((persona) => persona.id === personaId);
+  if (!targetPersona) {
+    return ranking;
+  }
+
+  const topScore = ranking[0]?.score ?? 0;
+  const forcedEntry: RankedPersona = {
+    persona: targetPersona,
+    score: Math.max(topScore, existing?.score ?? 0),
+  };
+
+  return [forcedEntry, ...ranking.filter((entry) => entry.persona.id !== personaId)];
 }
 
 function getQuestionWeight(questionId: QuestionId): number {
