@@ -156,6 +156,10 @@ const PERSONA_BALANCE_FACTORS: Partial<Record<PersonaId, number>> = {
   laobeizha: 1.1,
   duqiaolai: 1.05,
 };
+const PERSONA_SIGNAL_GAIN_FACTORS: Partial<Record<PersonaId, number>> = {
+  // 本质高手在映射覆盖面明显更宽，单独压低映射增益，避免候选阶段过度冒头。
+  benzhigaoshou: 0.88,
+};
 
 const PERSONA_KEY_DIMENSIONS: Partial<Record<PersonaId, DimensionId[]>> = {
   menggonglang: ["combat", "emotion"],
@@ -326,6 +330,7 @@ export function scoreQuiz(answers: AnswerMap): QuizOutcome {
     for (const personaId of PERSONA_IDS) {
       personaSignals[personaId] +=
         getOptionPersonaSignal(question.id, selectedOption.id, personaId, selectedOption.personaSignals) *
+        (PERSONA_SIGNAL_GAIN_FACTORS[personaId] ?? 1) *
         questionWeight;
     }
 
